@@ -8,17 +8,17 @@ class Plant:
 
 
 def main() -> None:
-    rose: Plant = Plant()
+    rose = Plant()
     rose.name = "Rose"
     rose.height = 25
     rose.age = 30
 
-    sunflower: Plant = Plant()
+    sunflower = Plant()
     sunflower.name = "Sunflower"
     sunflower.height = 80
     sunflower.age = 45
 
-    cactus: Plant = Plant()
+    cactus = Plant()
     cactus.name = "Cactus"
     cactus.height = 15
     cactus.age = 120

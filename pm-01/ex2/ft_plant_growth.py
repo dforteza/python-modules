@@ -15,7 +15,7 @@ class Plant:
 
 
 def main() -> None:
-    rose: Plant = Plant()
+    rose = Plant()
     rose.name = "Rose"
     rose.height = 25.0
     rose.days = 30
@@ -23,7 +23,7 @@ def main() -> None:
 
     print("=== Garden Plant Growth ===")
     rose.show()
-    start: float = rose.height
+    start = rose.height
     for day in range(1, 8):
         rose.grow()
         rose.age()
