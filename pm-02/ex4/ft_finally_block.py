@@ -30,11 +30,11 @@ def test_watering_system(plants: list[str]) -> None:
 
 def main() -> None:
     print("=== Garden Watering System ===")
-    print("Testing valid plants...")
+    print("\nTesting valid plants...")
     test_watering_system(["Tomato", "Lettuce", "Carrots"])
-    print("Testing invalid plants...")
+    print("\nTesting invalid plants...")
     test_watering_system(["Tomato", "lettuce", "Carrots"])
-    print("Cleanup always happens, even with errors!")
+    print("\nCleanup always happens, even with errors!")
 
 
 if __name__ == "__main__":

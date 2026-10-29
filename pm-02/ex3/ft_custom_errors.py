@@ -23,25 +23,25 @@ def check_water() -> None:
 
 def test_custom_errors() -> None:
     print("=== Custom Garden Errors Demo ===")
-    print("Testing PlantError...")
+    print("\nTesting PlantError...")
     try:
         check_plant()
     except PlantError as e:
         print(f"Caught PlantError: {e}")
 
-    print("Testing WaterError...")
+    print("\nTesting WaterError...")
     try:
         check_water()
     except WaterError as e:
         print(f"Caught WaterError: {e}")
 
-    print("Testing catching all garden errors...")
+    print("\nTesting catching all garden errors...")
     for check in [check_plant, check_water]:
         try:
             check()
         except GardenError as e:
             print(f"Caught GardenError: {e}")
-    print("All custom error types work correctly!")
+    print("\nAll custom error types work correctly!")
 
 
 if __name__ == "__main__":
