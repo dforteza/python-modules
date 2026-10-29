@@ -1,6 +1,6 @@
 # Resumen de POO en Python
 
-*Resumen de `poo_aptes.py`. Todos los ejemplos usan la misma clase `Plant`.*
+*Apuntes de POO (pm-01 · Code Cultivation; ABC en pm-06). Todos los ejemplos usan la misma clase `Plant`.*
 
 ## Índice
 
@@ -19,22 +19,22 @@ Un **atributo** es un dato que guarda una clase o un objeto.
 
 ### Atributo de instancia
 
-- **QUÉ ES:** un dato **propio de cada objeto**.
+- **QUÉ ES:** un dato **PROPIO DE CADA OBJETO**.
 - **CREACIÓN:** con `self.atributo = valor`, normalmente en `__init__`.
 - **ACCESO:** a través del objeto: `rose.height`.
 
 ### Atributo de clase
 
-- **QUÉ ES:** un dato **compartido por todos los objetos** de la clase.
+- **QUÉ ES:** un dato **COMPARTIDO POR TODOS** los objetos de la clase.
 - **CREACIÓN:** en el cuerpo de la clase, fuera de los métodos: `total = 0`.
 - **ACCESO:** a través de la clase: `Plant.total`.
 
-**Imagen:** la clase es el **molde** y cada objeto es una **galleta**. El atributo de clase está escrito en el molde; el de instancia, en cada galleta.
+**Mantra:** *`self.x` → CADA OBJETO EL SUYO; `Clase.x` → UNO PARA TODOS.*
 
-### No confundir: parámetro y atributo
+### No confundir
 
-- `name` es un **parámetro**: una variable local de `__init__` que desaparece cuando el método termina.
-- `self.name` es un **atributo de instancia**: se guarda en el objeto y sigue ahí después.
+- **Parámetro y atributo:** `name` es una variable local de `__init__` y desaparece al terminar el método; `self.name` se guarda en el objeto.
+- **Anotación y atributo:** `name: str` en el cuerpo de la clase SOLO ANOTA EL TIPO (para mypy) y no crea nada; `name: str = "Unknown"` sí crea un atributo de clase. Por eso `Plant().show()` en pm-01 ex1, sin asignar antes `name`, da `AttributeError`.
 
 ### Ejemplo
 
@@ -60,223 +60,130 @@ print(Plant.total)   # 2   -> uno solo, compartido
 
 ## 2. Métodos: de instancia, de clase y estáticos
 
-Un **método** es una función definida dentro de una clase.
+Un **método** es una función dentro de una clase. El tipo depende de QUÉ NECESITA TOCAR: el objeto, la clase o nada.
 
-Hay 3 tipos. Cuál usar depende de **qué necesita tocar el método**: el objeto, la clase o nada.
+| | De instancia | De clase | Estático |
+|---|---|---|---|
+| **TOCA** | UN OBJETO concreto | LA CLASE | NADA, solo sus parámetros |
+| **DECORADOR** | ninguno | `@classmethod` | `@staticmethod` |
+| **PRIMER PARÁMETRO** | `self` (el objeto) | `cls` (la clase) | ninguno |
+| **ACCESO** | `rose.grow()` | `Plant.anonymous()` | `Plant.is_older_than_year(400)` |
 
-### Método de instancia
+**Mantra:** *¿OBJETO? `self`. ¿CLASE? `cls`. ¿NADA? ESTÁTICO.*
 
-- **QUÉ ES:** trabaja con **un objeto concreto**.
-- **DECORADOR:** ninguno.
-- **PRIMER PARÁMETRO:** `self` (el objeto).
-- **ATR. PERMITIDOS:** de instancia y de clase.
-- **ACCESO:** a través del objeto: `rose.grow()`.
+### No confundir: `cls(...)`
 
-### Método de clase
+- `cls(...)` LLAMA AL CONSTRUCTOR y CREA UN OBJETO (no una clase): es lo mismo que `Plant(...)`.
+- `cls` es LA CLASE DESDE LA QUE LLAMAS: `Flower.anonymous()` intentaría crear una `Flower` (y fallaría, porque `Flower` también necesita `color`).
 
-- **QUÉ ES:** trabaja con **la clase**, es decir, con lo que comparten todos los objetos.
-- **DECORADOR:** `@classmethod`.
-- **PRIMER PARÁMETRO:** `cls` (la clase).
-- **ATR. PERMITIDOS:** solo de clase.
-- **ACCESO:** a través de la clase: `Plant.count()`.
-
-### Método estático
-
-- **QUÉ ES:** una **utilidad** relacionada con la clase que no toca ni el objeto ni la clase.
-- **DECORADOR:** `@staticmethod`.
-- **PRIMER PARÁMETRO:** ninguno automático.
-- **ATR. PERMITIDOS:** ninguno, solo lo que le pases por parámetro.
-- **ACCESO:** a través de la clase: `Plant.cm_to_m(200)`.
-
-**Pregunta para elegir:** ¿qué necesita el método?
-
-- Un objeto concreto → **de instancia**.
-- La clase entera → **de clase**.
-- Nada, solo sus parámetros → **estático**.
-
-### Ejemplo
+### Ejemplo (pm-01 ex6)
 
 ```python
-class Plant:
-    total = 0
+@staticmethod
+def is_older_than_year(days: int) -> bool:     # no usa self ni cls
+    return (days > 365)
 
-    def __init__(self, name, height):
-        self.name = name
-        self.height = height
-        Plant.total += 1
-
-    def grow(self):                # de instancia: toca ESA planta
-        self.height += 1
-
-    @classmethod
-    def count(cls):                # de clase: toca lo compartido
-        return cls.total
-
-    @staticmethod
-    def cm_to_m(cm):               # estático: solo usa su parámetro
-        return cm / 100
-
-
-rose = Plant("Rose", 25)
-oak = Plant("Oak", 200)
-
-rose.grow()
-print(rose.height)          # 26
-print(Plant.count())        # 2
-print(Plant.cm_to_m(200))   # 2.0
+@classmethod
+def anonymous(cls) -> "Plant":                 # constructor alternativo
+    return (cls("Unknown plant", 0.0, 0))      # = Plant("Unknown plant", 0.0, 0)
 ```
 
 ---
 
 ## 3. Herencia y polimorfismo
 
-La **herencia** permite crear una clase **hija** a partir de una clase **madre**.
+La **herencia** crea una clase **hija** que RECIBE TODOS LOS MÉTODOS de la **madre**: `class Flower(Plant):`.
 
-### Clase hija
+### Ampliar: con `super()`
 
-- **QUÉ ES:** una clase que recibe **todo** lo de la madre: atributos y métodos.
-- **SINTAXIS:** la madre entre paréntesis: `class Flower(Plant):`.
-- **EFECTO:** la hija puede **añadir** cosas nuevas y **sobrescribir** las que ya tiene.
+- **QUÉ ES:** la hija ejecuta el método de la madre y AÑADE LO SUYO.
+- **SINTAXIS:** `super().show()` y debajo lo nuevo.
+- **CUÁNDO:** cuando quieres lo de la madre y algo más (`Vegetable.age()`: cumple el día y +1 de nutrición).
 
-### super()
+### Sustituir: sin `super()`
 
-- **QUÉ ES:** la **clase madre**, vista desde dentro de la hija.
-- **SINTAXIS:** `super().__init__(name, height)` o `super().show()`.
-- **EFECTO:** ejecuta el método de la madre, así la hija no repite su código.
-
-### Sobrescritura
-
-- **QUÉ ES:** la hija define un método **con el mismo nombre** que uno de la madre.
-- **SINTAXIS:** `def grow(self):` dentro de la hija.
-- **EFECTO:** el objeto hija usa **su** versión, no la de la madre.
+- **QUÉ ES:** la hija define un método con el mismo nombre y el de la madre NO SE EJECUTA.
+- **SINTAXIS:** `def grow(self):` en la hija, sin `super()`.
+- **CUÁNDO:** cuando la hija lo hace de una forma completamente distinta.
 
 ### Polimorfismo
 
-- **QUÉ ES:** el **mismo método** se comporta distinto según la clase del objeto.
-- **SINTAXIS:** `for plant in garden: plant.grow()`.
-- **EFECTO:** cada objeto ejecuta la versión de su clase, sin preguntar cuál es.
+- **QUÉ ES:** la misma llamada ejecuta LA VERSIÓN DE LA CLASE DE CADA OBJETO.
+- **SINTAXIS:** `for plant in garden: plant.show()`.
+- **CUÁNDO:** para tratar igual a objetos de clases distintas.
 
-### No confundir: sobrescribir y ampliar
+**Mantra:** *CON `super()` AMPLÍAS; SIN `super()` SUSTITUYES.*
 
-- **Sobrescribir:** la hija **sustituye** el método de la madre (`Tree.grow()`).
-- **Ampliar:** la hija llama a `super()` y **añade** lo suyo (`Flower.show()`).
-- `__init__` es un método más y sigue la misma regla:
-  - Si la hija **no** tiene `__init__`, **hereda** el de la madre (`Tree`).
-  - Si la hija **sí** tiene `__init__`, lo **sobrescribe**; si no llama a `super().__init__()`, el objeto se queda sin los atributos de la madre.
+### No confundir: `__init__` también sigue la regla
 
-### Ejemplo
+- Hija SIN `__init__` → hereda el de la madre.
+- Hija CON `__init__` → lo sustituye. Si no llama a `super().__init__()`, NO SE CREAN LOS ATRIBUTOS DE LA MADRE y `show()` da `AttributeError: ... no attribute '_name'`.
 
-*`Plant` reducida a lo necesario para este tema.*
+### No confundir: `self` en código del padre
+
+- `self.Stats()` está escrito en `Plant.__init__`, pero al crear un `Tree` SELF ES EL `Tree` → se crea `Tree.Stats`.
+- **Mantra:** *`self.X` SE BUSCA EN LA CLASE DEL OBJETO, AUNQUE EL CÓDIGO ESTÉ EN EL PADRE.*
+- mypy no ejecuta el código y creería que es `Plant.Stats`; por eso en `Tree` va `_stats: "Tree.Stats"`.
+
+### Ejemplo (pm-01 ex5)
 
 ```python
-class Plant:
-    def __init__(self, name, height):
-        self.name = name
-        self.height = height
+class Vegetable(Plant):
+    def __init__(self, name, height, age, growth_rate, harvest_season):
+        super().__init__(name, height, age, growth_rate)  # la madre crea lo común
+        self._harvest_season = harvest_season              # la hija añade lo suyo
+        self._nutritional_value = 0
 
-    def grow(self):
-        self.height += 1
-
-    def show(self):
-        print(f"{self.name}: {self.height}cm")
-
-
-class Flower(Plant):
-    def __init__(self, name, height, color):
-        super().__init__(name, height)   # la madre crea name y height
-        self.color = color               # la hija añade lo suyo
-
-    def show(self):                      # AMPLÍA: madre + lo suyo
-        super().show()
-        print(f"  color: {self.color}")
-
-
-class Tree(Plant):
-    def grow(self):                      # SOBRESCRIBE: sustituye
-        self.height += 5
-
-
-garden = [Plant("Fern", 10), Flower("Rose", 25, "red"), Tree("Oak", 200)]
-for plant in garden:                     # POLIMORFISMO
-    plant.grow()
-    plant.show()
-# Fern: 11cm
-# Rose: 26cm
-#   color: red
-# Oak: 205cm
+    def age(self):
+        super().age()                   # AMPLÍA: cumple el día...
+        self._nutritional_value += 1    # ...y suma nutrición
 ```
 
 ---
 
 ## 4. Encapsulación
 
-La **encapsulación** consiste en **proteger los atributos** para que no se cambien desde fuera sin control (por ejemplo, una altura negativa).
+La **encapsulación** consiste en PROTEGER LOS ATRIBUTOS para que no se cambien sin control (por ejemplo, con una altura negativa).
 
-### Atributo público
+### Niveles de acceso
 
-- **QUÉ ES:** un atributo sin protección.
-- **SINTAXIS:** sin guion bajo: `self.height`.
-- **DESDE FUERA:** se lee y se cambia libremente: `rose.height = -5`.
-
-### Atributo protegido
-
-- **QUÉ ES:** un atributo que **no se debería** tocar desde fuera. Es solo una **convención**.
-- **SINTAXIS:** un guion bajo: `self._height`.
-- **DESDE FUERA:** funciona igual (`rose._height = -5`); Python no lo impide.
-
-### Atributo privado
-
-- **QUÉ ES:** un atributo que Python **renombra** para que sea difícil de alcanzar desde fuera.
-- **SINTAXIS:** dos guiones bajos: `self.__height`.
-- **DESDE FUERA:** `rose.__height` da `AttributeError`.
+| Nivel | Sintaxis | Desde fuera |
+|---|---|---|
+| Público | `self.height` | se lee y se cambia libremente |
+| Protegido | `self._height` | funciona igual: es SOLO UN AVISO ("no lo toques") |
+| Privado | `self.__height` | Python lo RENOMBRA a `_Plant__height` (name mangling) |
 
 ### Getters y setters
 
-- **QUÉ ES:** métodos que dan acceso **controlado** al atributo; el setter **valida** antes de cambiarlo.
-- **SINTAXIS:** `def get_height(self):` y `def set_height(self, value):`.
-- **DESDE FUERA:** `rose.get_height()` y `rose.set_height(30)`.
+- **QUÉ ES:** métodos que dan acceso CONTROLADO al atributo; el setter VALIDA antes de cambiarlo.
+- **SINTAXIS:** `def get_height(self):` y `def set_height(self, height):`.
+- **CUÁNDO:** siempre que un valor pueda ser inválido (en pm-01 ex4, la altura y la edad negativas).
 
-### @property
+### `@property`
 
-- **QUÉ ES:** getter y setter que **se usan como un atributo** normal, sin paréntesis.
-- **SINTAXIS:** `@property` encima del getter y `@height.setter` encima del setter; los dos se llaman igual, `height`.
-- **DESDE FUERA:** `rose.height` y `rose.height = 30`; por debajo se ejecutan los métodos.
+- **QUÉ ES:** un getter y un setter que se usan COMO UN ATRIBUTO, sin paréntesis.
+- **SINTAXIS:** `@property` encima de `def height(self)` y `@height.setter` encima de `def height(self, value)`.
+- **CUÁNDO:** fuera de 42, o cuando el subject lo autorice (en pm-01 no lo estaba).
+
+**Mantra:** *`_` AVISA, `__` RENOMBRA, EL SETTER PROTEGE. En Python NADA ES PRIVADO.*
 
 ### No confundir: name mangling
 
-- Dentro de la clase, Python renombra `__height` a `_Plant__height`. A esto se le llama **name mangling**.
-- **Leer** `rose.__height` → `AttributeError`, porque con ese nombre no existe.
-- **Escribir** `rose.__height = -5` → no da error, pero crea un atributo **nuevo** que no tiene nada que ver con el de la clase.
-- **Escribir** `rose._Plant__height = -5` → sí cambia el de la clase.
-- **Conclusión:** en Python **nada es privado de verdad**. La protección real la dan los getters y setters que validan.
+- `rose.__height = -5` no da error, pero CREA UN ATRIBUTO NUEVO; el de verdad (`_Plant__height`) no cambia.
+- `rose._Plant__height = -5` SÍ lo cambia.
 
-### Ejemplo
-
-*`Plant` reducida a lo necesario para este tema.*
+### Ejemplo (pm-01 ex4)
 
 ```python
-class Plant:
-    def __init__(self, name, height):
-        self.name = name          # público
-        self.__height = height    # privado
-
-    @property
-    def height(self):             # getter: rose.height
-        return self.__height
-
-    @height.setter
-    def height(self, value):      # setter: rose.height = 30
-        if value < 0:
-            raise ValueError("height must be positive")
-        self.__height = value
+def set_height(self, height: float) -> None:
+    if self._validate(height, "height"):      # el setter valida...
+        self._height = height                 # ...y solo entonces cambia
+    else:
+        print("Height update rejected")
 
 
-rose = Plant("Rose", 25)
-rose.height = 30              # pasa por el setter, que valida
-print(rose.height)            # 30
-print(rose._Plant__height)    # 30  -> name mangling: se puede alcanzar
-# rose.height = -5            -> ValueError
-# print(rose.__height)        -> AttributeError
+rose.set_height(-5)     # → Height update rejected (protegido por el setter)
+rose._height = -5       # → funciona: el _ no lo impide
 ```
 
 ---
