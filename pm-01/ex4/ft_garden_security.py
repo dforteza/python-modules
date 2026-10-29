@@ -3,17 +3,23 @@ class Plant:
                  growth_rate: float = 0.8) -> None:
         self._name = name
         self._growth_rate = growth_rate
-        self._height = height if self._validate(height, "height") else 0.0
-        self._age = age if self._validate(age, "age") else 0
+        if self._validate(height, "height"):
+            self._height = height
+        else:
+            self._height = 0.0
+        if self._validate(age, "age"):
+            self._age = age
+        else:
+            self._age = 0
 
     def _validate(self, value: float, field: str) -> bool:
         if value < 0:
             print(f"{self._name}: Error, {field} can't be negative")
-            return False
-        return True
+            return (False)
+        return (True)
 
     def get_height(self) -> float:
-        return self._height
+        return (self._height)
 
     def set_height(self, height: float) -> None:
         if self._validate(height, "height"):
@@ -23,7 +29,7 @@ class Plant:
             print("Height update rejected")
 
     def get_age(self) -> int:
-        return self._age
+        return (self._age)
 
     def set_age(self, age: int) -> None:
         if self._validate(age, "age"):
