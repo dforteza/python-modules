@@ -44,6 +44,7 @@ def achievement_tracker() -> None:
     print()
 
     # ONLY: player_achievements - distinct(all - this player)
+    # Achievements no one else has for each player
     for name, achievements in players:
         others = set()
         for other_name, other_achievements in players:

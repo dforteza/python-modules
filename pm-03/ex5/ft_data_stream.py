@@ -37,7 +37,12 @@ def data_stream() -> None:
     print(f"Built list of 10 events: {events}")
 
     # CONSUME: the for asks consume_event until the list is empty
-    for event in consume_event(events):
+    it = iter(consume_event(events))
+    while True:
+        try:
+            event = next(it)
+        except StopIteration:
+            break
         print(f"Got event from list: {event}")
         print(f"Remains in list: {events}")
 
