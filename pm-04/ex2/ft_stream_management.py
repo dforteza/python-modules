@@ -44,7 +44,6 @@ def stream_management(argv: list[str]) -> None:
 
     # SAVE FILE
     sys.stdout.write("Enter new file name (or empty): ")
-    sys.stdout.flush()
     new_filename = sys.stdin.readline().strip("\n")
     if not new_filename:
         print("Not saving data.")
