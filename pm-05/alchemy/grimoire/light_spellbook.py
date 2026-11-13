@@ -7,5 +7,5 @@ def light_spell_record(spell_name, ingredients):
 
 	result = validate_ingredients(ingredients)
 	if "INVALID" in result:
-		return f"Spell rejected: {spell_name} ({result})"
-	return f"Spell recorded: {spell_name} ({result})"
+		return (f"Spell rejected: {spell_name} ({result})")
+	return (f"Spell recorded: {spell_name} ({result})")
