@@ -2,5 +2,6 @@
 __pycache__/
 .mypy_cache/
 PLANNING.md
-en.subject.pdflab_env/
+en.subject.pdf
+lab_env/
 poetry-env/
