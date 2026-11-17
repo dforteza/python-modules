@@ -1,12 +1,13 @@
-### I - ABSTRACT PRODUCT 1 ###
+# I - ABSTRACT PRODUCT 1
 
 from abc import ABC, abstractmethod
 
+
 class Creature(ABC):
-    def __init__(self, name : str, type : str) -> None:
+    def __init__(self, name: str, type: str) -> None:
         super().__init__()
-        self._name : str = name
-        self._type : str = type
+        self._name: str = name
+        self._type: str = type
 
     @abstractmethod
     def attack(self) -> str:

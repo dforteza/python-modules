@@ -1,4 +1,4 @@
-### II- PRODUCTS
+# II- PRODUCTS
 
 from .creature import Creature
 from .capability import TransformCapability

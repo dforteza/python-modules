@@ -147,11 +147,11 @@ class DataStream():
             flag: bool = False
             # Try every processor
             for processor in self._processor_list:
-                if processor.validate(e) == True:
+                if processor.validate(e):
                     processor.ingest(e)
                     flag = True
                     break
-            if flag == False:
+            if not flag:
                 print(
                     f"DataStream error - Can't process element in stream: {e}")
 

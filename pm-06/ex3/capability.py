@@ -1,4 +1,4 @@
-### I- ABSTRACT PRODUCT 2 ###
+# I- ABSTRACT PRODUCT 2
 
 from abc import ABC, abstractmethod
 

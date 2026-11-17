@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from .creature import Creature
 from .entities import Flameling, Pyrodon, Shiftling, Morphagon
 
-### III- ABSTRACT FACTORY ###
+
+# III- ABSTRACT FACTORY
 class CreatureFactory(ABC):
     @abstractmethod
     def create_base(self) -> Creature:
@@ -12,13 +13,15 @@ class CreatureFactory(ABC):
     def create_evolved(self) -> Creature:
         pass
 
-### IV- FACTORY ###
+
+# IV- FACTORY
 class FlameFactory(CreatureFactory):
     def create_base(self) -> Creature:
         return (Flameling())
 
     def create_evolved(self) -> Creature:
         return (Pyrodon())
+
 
 class TransformCreatureFactory(CreatureFactory):
     def create_base(self) -> Creature:
