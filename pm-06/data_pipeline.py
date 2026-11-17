@@ -170,13 +170,16 @@ class DataStream():
                 )
 
     def output_pipeline(self, nb: int, plugin: ExportPlugin) -> None:
+        # For each processor
         for processor in self._processor_list:
+            # data to export
             data: list[tuple[int, str]] = []
             for _ in range(nb):
                 if not processor.get_values():
                     break
                 data.append(processor.output())
             plugin.process_output(data)
+            print('-' * 110)
 
 
 def main() -> None:

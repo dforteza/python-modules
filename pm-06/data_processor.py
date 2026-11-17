@@ -93,7 +93,7 @@ class LogProcessor(DataProcessor):
 
     def ingest(self, data: dict[str, str] | list[dict[str, str]]) -> None:
         if not self.validate(data):
-            raise ValueError("Improper log data")
+            raise ValueError(f"Improper log data for {data}")
         if isinstance(data, list):
             for log in data:
                 self._save_value(
@@ -164,7 +164,7 @@ def main() -> None:
 
     # - Ingest
     logs = [
-        {"log_level": "NOTICE", "log_message": 1},
+        {"log_level": "NOTICE", "log_message": "Connection to server"},
         {"log_level": "ERROR", "log_message": "Unauthorized access!!"},
     ]
     try:
