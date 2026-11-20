@@ -103,7 +103,7 @@ def main() -> None:
     print(f"Crew size: {len(sm.crew)}")
     print("Crew members:")
     for m in sm.crew:
-        print(f"- {m.member_id} ({m.name}) - {m.rank.value}")
+        print(f"- {m.name} ({m.rank.value}) - {m.specialization}")
 
     print()
     print("=" * 41)
